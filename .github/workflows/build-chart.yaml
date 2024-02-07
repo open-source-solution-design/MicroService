@@ -61,7 +61,7 @@ jobs:
         git config user.name shenlan
         git config user.email manbuzhe2009@qq.com
         cd ${GITHUB_WORKSPACE}/ && rm *.tgz -f
-        rm -rvf ${GITHUB_WORKSPACE}/charts/*
+        cd ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/ && rm *.tgz -f
         git add -A
         git commit -a -m "Auto Merged"
         git push
