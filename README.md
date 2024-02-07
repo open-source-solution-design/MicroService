@@ -1,5 +1,29 @@
 # 方案概述
 
+Microservice architecture open source solutions are designed to support:
+- Development
+- management of microservices.
+- ServiceMesh based on Linkerd2, Amesh, or Istio.
+
+# 通用组件
+
+- CI/CD           | GitHub Action                | 自动化构建、测试、部署 | 促进持续集成和持续交付流程 |
+- GitOPS          | FluxCD/Flagger               | 自动化Canary， Blue-Green,  A/B Testing | 应用渐进发布流程 |
+- Scalability     | HPA/KEDA                     | 基于资源指标，事件状态，动态扩缩POD副本  | 弹性伸缩 |
+- Gateway         | Apisix                       | 应用网关，熔断，限流。降级，流量调度  | 微服务网关 |
+- Config Server   | Nacos                        | 配置中心，用于集中管理微服务的配置信息，支持动态更新配置  | 配置中心 |
+- Registry Server | Consol/Nacos                 | 注册中心，管理服务实例的注册与发现，支持服务健康检查和负载均衡  | 注册中心 |
+- Cache/DB        | redis/postgresql/mongodb     | 
+
+# 其他
+
+- Notifications   | Novu                         | The ultimate service for managing multi-channel notifications with a single API.
+- Workflows       | Windmill                     | Developer platform for APIs, background jobs, workflows and UIs
+
+# UPstream
+
+- https://github.com/novuhq/novu
+
 
 # CICD
 

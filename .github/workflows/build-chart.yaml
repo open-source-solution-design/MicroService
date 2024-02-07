@@ -1,0 +1,66 @@
+name: BUILD Chart
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  pull_request:
+  push:
+    paths:
+      - 'charts'
+      - '.github/workflows/build-charts.yaml'
+  workflow_dispatch:
+    branches:
+      - main
+
+env:
+  REPO_URL: https://github.com/open-source-solution-design/MicroService.git 
+  REPO_BRANCH: main
+  TZ: Asia/Shanghai
+  TAG: 0.1.4 
+
+jobs:
+  build-push-charts:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Initialization environment
+      shell: bash
+      run: |
+        sudo apt update
+        sudo apt install git -y
+        sudo curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+        helm plugin install https://github.com/chartmuseum/helm-push.git
+        helm repo add stable https://charts.onwalk.net
+        helm repo add apisix https://charts.apiseven.com
+        helm repo add bitnami https://charts.bitnami.com/bitnami 
+        helm repo add windmill https://windmill-labs.github.io/windmill-helm-charts/
+        helm repo up
+
+    - name: Build and Push App chart
+      working-directory: charts/itsm-dev-platform
+      shell: bash
+      run: |
+        echo ${GITHUB_WORKSPACE}
+        cd ${GITHUB_WORKSPACE}/ && ls -l && mkdir -pv charts/
+        cd ${GITHUB_WORKSPACE}/charts && rm -rvf apisix     ; helm fetch apisix/apisix --version 2.6.0 --untar
+        cd ${GITHUB_WORKSPACE}/charts && rm -rvf novu       ; helm fetch stable/novu --version 0.1.6 --untar
+        cd ${GITHUB_WORKSPACE}/charts && rm -rvf windmill   ; helm fetch windmill/windmill --version 2.0.88 --untar
+        cd ${GITHUB_WORKSPACE}/charts && rm -rvf redis      ; helm fetch bitnami/redis --version 18.12.1 --untar
+        cd ${GITHUB_WORKSPACE}/charts && rm -rvf mongodb    ; helm fetch bitnami/mongodb --version 14.8.3 --untar
+        cd ${GITHUB_WORKSPACE}/charts && rm -rvf postgresql ; helm fetch bitnami/postgresql --version 12.3.1 --untar
+        cd ${GITHUB_WORKSPACE}/charts && rm -rvf minio      ; helm fetch bitnami/minio --version 12.4.2 --untar
+        cd ${GITHUB_WORKSPACE}/charts && rm *.tgz -f
+        helm cm-push -u admin -p "${{ secrets.HELM_REPO_PASSWORD }}" --force ./ stable
+
+    - name: Merge Upstream Repo
+      shell: bash
+      run: |
+        git config user.name shenlan
+        git config user.email manbuzhe2009@qq.com
+        cd ${GITHUB_WORKSPACE}/ && rm *.tgz -f
+        rm -rvf ${GITHUB_WORKSPACE}/charts/*
+        git add -A
+        git commit -a -m "Auto Merged"
+        git push
