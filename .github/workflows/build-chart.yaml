@@ -43,16 +43,17 @@ jobs:
       shell: bash
       run: |
         echo ${GITHUB_WORKSPACE}
-        cd ${GITHUB_WORKSPACE}/ && ls -l && mkdir -pv charts/
-        cd ${GITHUB_WORKSPACE}/charts && rm -rvf apisix     ; helm fetch apisix/apisix --version 2.6.0 --untar
-        cd ${GITHUB_WORKSPACE}/charts && rm -rvf novu       ; helm fetch stable/novu --version 0.1.6 --untar
-        cd ${GITHUB_WORKSPACE}/charts && rm -rvf windmill   ; helm fetch windmill/windmill --version 2.0.88 --untar
-        cd ${GITHUB_WORKSPACE}/charts && rm -rvf redis      ; helm fetch bitnami/redis --version 18.12.1 --untar
-        cd ${GITHUB_WORKSPACE}/charts && rm -rvf mongodb    ; helm fetch bitnami/mongodb --version 14.8.3 --untar
-        cd ${GITHUB_WORKSPACE}/charts && rm -rvf postgresql ; helm fetch bitnami/postgresql --version 12.3.1 --untar
-        cd ${GITHUB_WORKSPACE}/charts && rm -rvf minio      ; helm fetch bitnami/minio --version 12.4.2 --untar
-        cd ${GITHUB_WORKSPACE}/charts && rm *.tgz -f
-        helm cm-push -u admin -p "${{ secrets.HELM_REPO_PASSWORD }}" --force ./ stable
+        echo `pwd`
+        cd ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/       && ls -l && mkdir -pv charts/
+        cd ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/charts && rm -rvf apisix     ; helm fetch apisix/apisix --version 2.6.0 --untar
+        cd ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/charts && rm -rvf novu       ; helm fetch stable/novu --version 0.1.6 --untar
+        cd ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/charts && rm -rvf windmill   ; helm fetch windmill/windmill --version 2.0.88 --untar
+        cd ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/charts && rm -rvf redis      ; helm fetch bitnami/redis --version 18.12.1 --untar
+        cd ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/charts && rm -rvf mongodb    ; helm fetch bitnami/mongodb --version 14.8.3 --untar
+        cd ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/charts && rm -rvf postgresql ; helm fetch bitnami/postgresql --version 12.3.1 --untar
+        cd ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/charts && rm -rvf minio      ; helm fetch bitnami/minio --version 12.4.2 --untar
+        cd ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/charts && rm *.tgz -f
+        cd ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/       && helm cm-push -u admin -p "${{ secrets.HELM_REPO_PASSWORD }}" --force ./ stable
 
     - name: Merge Upstream Repo
       shell: bash
