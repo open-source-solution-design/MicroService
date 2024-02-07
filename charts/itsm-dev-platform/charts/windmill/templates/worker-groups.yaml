@@ -1,0 +1,164 @@
+{{- range $v := .Values.windmill.workerGroups }}
+{{ if and $v.replicas (gt (int $v.replicas) 0)}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: windmill-workers-{{ $v.name }}
+  labels:
+    app: windmill-workers
+    app.kubernetes.io/name: windmill-workers
+    chart: {{ template "windmill.chart" $ }}
+    release: {{ $.Release.Name }}
+    heritage: {{ $.Release.Service }}
+    workerGroup: {{ $v.name }}
+spec:
+  replicas: {{ $v.replicas }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: windmill-workers
+      workerGroup: {{ $v.name }}
+  template:
+    metadata:
+      labels:
+        app: windmill-workers
+        app.kubernetes.io/name: windmill-workers
+        release: {{ $.Release.Name }}
+        workerGroup: {{ $v.name }}
+{{- with $v.labels }}
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with $v.annotations }}
+      annotations:
+{{ toYaml . | indent 8 }}
+{{- end }}
+    spec:
+      serviceAccountName: {{ template "windmill.serviceAccountName" $ }}
+      {{- if $.Values.windmill.imagePullSecrets }}
+      imagePullSecrets:
+      - name: {{ $.Values.windmill.imagePullSecrets }}
+      {{ end }}
+      {{ if $v.initContainers }}
+      initContainers:
+      {{- with $v.initContainers }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+      {{ end }}
+      containers:
+      {{- with $v.extraContainers }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+      - name: windmill-worker
+       {{ if  $.Values.enterprise.nsjail }}
+       #because nsjail requires privileged access
+        securityContext:
+          privileged: true
+        {{ else }}
+        securityContext:
+        {{ with $v.securityContext }}
+{{ toYaml . | indent 12 }}
+        {{ end }}
+        {{ end }}
+        {{ if $.Values.enterprise.enabled }}
+        image: {{ default "ghcr.io/windmill-labs/windmill-ee" $.Values.windmill.image }}:{{ default $.Chart.AppVersion $.Values.windmill.tag }}
+        {{ else }}
+        image: {{ default "ghcr.io/windmill-labs/windmill" $.Values.windmill.image }}:{{ default $.Chart.AppVersion $.Values.windmill.tag }}
+        {{ end }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8001
+        {{ if $v.volumeMounts }}
+        volumeMounts:
+        {{- with $v.volumeMounts }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{ end }}
+        env:
+        {{- with $v.extraEnv }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{ if $.Values.enterprise.enabled }}
+        - name : "METRICS_ADDR"
+          value: "true"
+        {{ end }}
+        {{ if $.Values.windmill.databaseUrlSecretName }}
+        - name: "DATABASE_URL"
+          valueFrom:
+            secretKeyRef:
+              name: "{{ $.Values.windmill.databaseUrlSecretName }}"
+              key: "{{ $.Values.windmill.databaseUrlSecretKey }}"
+        {{ else }}
+        - name: "DATABASE_URL"
+          value: "{{ $.Values.windmill.databaseUrl }}"
+        {{ end }}
+        - name: "BASE_URL"
+          value: "{{ $.Values.windmill.baseProtocol }}://{{ $.Values.windmill.baseDomain }}"
+        - name: "RUST_LOG"
+          value: "{{ $.Values.windmill.rustLog }}"
+        - name: "MODE"
+          value: "worker"
+        - name: "JSON_FMT"
+          value: "true"
+        {{ if $.Values.windmill.pipIndexUrl }}
+        - name: "PIP_INDEX_URL"
+          value: "{{ $.Values.windmill.pipIndexUrl }}"
+        {{ end }}
+        {{ if $.Values.windmill.pipExtraIndexUrl }}
+        - name: "PIP_EXTRA_INDEX_URL"
+          value: "{{ $.Values.windmill.pipExtraIndexUrl }}"
+        {{ end }}
+        {{ if $.Values.windmill.pipTrustedHost }}
+        - name: "PIP_TRUSTED_HOST"
+          value: "{{ $.Values.windmill.pipTrustedHost }}"
+        {{ end }}
+        {{ if $.Values.windmill.npmConfigRegistry }}
+        - name: "NPM_CONFIG_REGISTRY"
+          value: "{{ $.Values.windmill.npmConfigRegistry }}"
+        {{ end }}
+        {{ if $.Values.enterprise.enabled }}
+        - name: "LICENSE_KEY"
+          value: "{{ $.Values.enterprise.licenseKey }}"
+        {{ if $.Values.enterprise.enabledS3DistributedCache }}
+        - name: "S3_CACHE_BUCKET"
+          value: "{{ $.Values.enterprise.s3CacheBucket }}"
+        - name: "RCLONE_S3_PROVIDER"
+          value: "AWS"
+        {{ end }}
+        {{ if $.Values.enterprise.nsjail }}
+        - name: "DISABLE_NSJAIL"
+          value: "false"
+        {{ end }}
+        {{ end }}
+        - name: "WORKER_GROUP"
+          value: "{{ $v.name }}"
+        resources:
+{{ toYaml $v.resources | indent 12 }}
+      volumes:
+    {{ if $.Values.windmill.exposeHostDocker }}
+      - name: docker-sock
+        hostPath:
+          path: "/var/run/docker.sock"
+          type: File
+    {{ end }}
+    {{- with $v.volumes }}
+    {{ toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with $v.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with $v.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with $v.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- end }}
+{{- end }}
