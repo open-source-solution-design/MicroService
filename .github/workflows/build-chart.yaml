@@ -63,5 +63,5 @@ jobs:
         cd ${GITHUB_WORKSPACE}/ && rm *.tgz -f
         cd ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/ && rm *.tgz -f
         git add -A
-        git commit -a -m "Auto Merged"
+        git commit -a -m "Auto Merged" || true
         git push
