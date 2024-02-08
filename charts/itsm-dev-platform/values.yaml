@@ -98,6 +98,7 @@ tolerations: []
 affinity: {}
 
 apisix:
+  fullnameOverride: 'gateway'
   enabled: true
   service:
     http:

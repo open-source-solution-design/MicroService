@@ -15,7 +15,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.0
+version: 0.1.2
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
@@ -23,24 +23,31 @@ version: 0.1.0
 # It is recommended to use it with quotes.
 appVersion: "1.16.0"
 dependencies:
-- name: https://charts.apiseven.com
+- name: apisix
+  repository: https://charts.apiseven.com
   condition: apisix.enabled
   version: "2.6.0"
-- name: https://charts.onwalk.net
+- name: novu
+  repository: https://charts.onwalk.net
   condition: novu.enabled
   version: "0.1.6"
-- name: https://windmill-labs.github.io/windmill-helm-charts/
+- name: windmill
+  repository: https://windmill-labs.github.io/windmill-helm-charts/
   condition: windmill.enabled
   version: "2.0.88"
-- name: https://charts.bitnami.cobitnami:postgresql
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
   condition: postgresql.enabled
   version: "12.3.1"
-- name: https://charts.bitnami.com/bitnami:mongodb
+- name: mongodb
+  repository: https://charts.bitnami.com/bitnami
   condition: mongodb.enabled
   version: "14.8.3"
-- name: https://charts.bitnami.com/bitnami:redis
+- name: redis
+  repository: https://charts.bitnami.com/bitnami
   condition: redis.enabled
   version: "18.12.1"
-- name: https://charts.bitnami.com/bitnami:minio
+- name: minio
+  repository: https://charts.bitnami.com/bitnami
   condition: minio.enabled
   version: "12.4.2"
