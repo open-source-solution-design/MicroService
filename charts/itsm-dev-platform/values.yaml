@@ -96,3 +96,31 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+apisix:
+  enabled: true
+  service:
+    http:
+      enabled: true
+      servicePort: 80
+    tls:
+      servicePort: 443
+  apisix:
+    ssl:
+      enabled: true
+    prometheus:
+      enabled: true
+  dashboard:
+    enabled: true
+novu:
+  enabled: true
+windmill:
+  enabled: true
+postgresql:
+  enabled: false
+mongodb:
+  enabled: false
+redis:
+  enabled: false
+minio:
+  enabled: false
