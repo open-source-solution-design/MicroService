@@ -4,3 +4,5 @@
 [submodule "playbook"]
 	path = playbook
 	url = https://github.com/svc-design/playbook.git
+[submodule "iac_modules/"]
+	branch = iac_micro_service
