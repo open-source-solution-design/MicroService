@@ -114,6 +114,7 @@ apisix:
   dashboard:
     enabled: true
 novu:
+  fullnameOverride: novu
   enabled: true
 windmill:
   enabled: true
