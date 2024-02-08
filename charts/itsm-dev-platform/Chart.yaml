@@ -32,15 +32,15 @@ dependencies:
 - name: https://windmill-labs.github.io/windmill-helm-charts/
   condition: windmill.enabled
   version: "2.0.88"
-- name: https://charts.bitnami.com/bitnami
+- name: https://charts.bitnami.cobitnami:postgresql
   condition: postgresql.enabled
   version: "12.3.1"
-- name: https://charts.bitnami.com/bitnami
+- name: https://charts.bitnami.com/bitnami:mongodb
   condition: mongodb.enabled
   version: "14.8.3"
-- name: https://charts.bitnami.com/bitnami
+- name: https://charts.bitnami.com/bitnami:redis
   condition: redis.enabled
   version: "18.12.1"
-- name: https://charts.bitnami.com/bitnami
+- name: https://charts.bitnami.com/bitnami:minio
   condition: minio.enabled
   version: "12.4.2"
