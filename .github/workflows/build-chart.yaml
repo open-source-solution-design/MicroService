@@ -40,10 +40,6 @@ jobs:
         helm repo add windmill https://windmill-labs.github.io/windmill-helm-charts/
         helm repo up
 
-    - name: Create GitRepo Backup Branch
-      shell: bash
-      run: git branch backup && git checkout backup
-
     - name: Build and Push App chart
       working-directory: charts/itsm-dev-platform
       shell: bash
@@ -69,5 +65,5 @@ jobs:
         git checkout main
         git add -A
         git commit -a -m "Auto Merged" || true
-        git merge backup || true
+        git merge origin/backup || true
         git push
