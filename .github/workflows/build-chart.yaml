@@ -6,8 +6,8 @@ on:
   pull_request:
   push:
     paths:
-      - 'charts/*'
       - '.github/workflows/build-charts.yaml'
+      - 'charts/itsm-dev-platform/values.yaml'
   workflow_dispatch:
     branches:
       - main

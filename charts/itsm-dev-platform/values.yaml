@@ -99,7 +99,14 @@ affinity: {}
 
 apisix:
   enabled: true
-  nameOverride: 'gateway'
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+  nameOverride: 'apisix'
   initContainer:
     image: artifact.onwalk.net/public/busybox
     tag: 1.28
@@ -143,6 +150,48 @@ apisix:
 novu:
   enabled: true
   nameOverride: "novu"
+  fullnameOverride: "novu"
+  redis:
+    enabled: true
+    master:
+      service:
+        ports:
+          redis: "6379"
+    architecture: standalone
+    auth:
+      enabled: false
+  mongodb:
+    enabled: true
+    architecture: standalone
+    auth:
+      enabled: false
+    service:
+      ports:
+        mongodb: "27017"
+  api:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
+  web:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
+  ws:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
   global:
     imageRegistry: 'artifact.onwalk.net/public'
 windmill:
