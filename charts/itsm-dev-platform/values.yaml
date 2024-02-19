@@ -2,7 +2,6 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 1
 
 image:
   repository: nginx
@@ -59,18 +58,6 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-
 autoscaling:
   enabled: false
   minReplicas: 1
@@ -97,15 +84,23 @@ tolerations: []
 
 affinity: {}
 
+replicaCount: 0
+resources:
+  requests:
+    cpu: 50m
+    memory: 50Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
 apisix:
   enabled: true
   resources:
     requests:
-      cpu: 100m
-      memory: 128Mi
+      cpu: 50m
+      memory: 50Mi
     limits:
-      cpu: 200m
-      memory: 256Mi
+      cpu: 100m
+      memory: 200Mi
   nameOverride: 'apisix'
   initContainer:
     image: artifact.onwalk.net/public/busybox
@@ -131,8 +126,24 @@ apisix:
     image:
       repository: artifact.onwalk.net/public/apache/apisix-dashboard
       tag: 3.0.0-alpine
+    config:
+      conf:
+        listen:
+          host: 0.0.0.0
+          port: 9000
+        etcd:
+          endpoints:
+            - itsm-dev-platform-etcd:2379
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
   etcd:
     enabled: true
+    fullnameOverride: itsm-dev-platform-etcd
     replicaCount: 3
     resources:
       requests:
@@ -192,13 +203,57 @@ novu:
       limits:
         cpu: 200m
         memory: 256Mi
+  worker:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
   global:
     imageRegistry: 'artifact.onwalk.net/public'
 windmill:
   enabled: true
-  appReplicas: 1
-  lspReplicas: 1
-  multiplayerReplicas: 1
+  windmill:
+    appReplicas: 1
+    lspReplicas: 1
+    multiplayerReplicas: 1
+    app:
+      resources:
+        limits:
+          cpu: "200m"
+          memory: "300Mi"
+        requests:
+          cpu: "100m"
+          memory: "100Mi"
+    lsp:
+      resources:
+        limits:
+          cpu: "200m"
+          memory: "300Mi"
+        requests:
+          cpu: "100m"
+          memory: "100Mi"
+    workerGroups:
+      - name: "default"
+        replicas: 2
+        resources:
+          requests:
+            memory: "100Mi"
+            cpu: "100m"
+          limits:
+            memory: "300Mi"
+            cpu: "150m"
+      - name: "native"
+        replicas: 2
+        resources:
+          requests:
+            memory: "100Mi"
+            cpu: "100m"
+          limits:
+            memory: "300Mi"
+            cpu: "150m"
   postgresql:
     enabled: true
     fullnameOverride: windmill-postgresql
@@ -212,25 +267,6 @@ windmill:
         requests:
           cpu: "100m"
           memory: "100Mi"
-  workerGroups:
-    - name: "default"
-      replicas: 2
-      resources:
-        requests:
-          memory: "100Mi"
-          cpu: "100m"
-        limits:
-          memory: "300Mi"
-          cpu: "150m"
-    - name: "native"
-      replicas: 2
-      resources:
-        requests:
-          memory: "100Mi"
-          cpu: "100m"
-        limits:
-          memory: "300Mi"
-          cpu: "150m"
 postgresql:
   enabled: false
 mongodb:
