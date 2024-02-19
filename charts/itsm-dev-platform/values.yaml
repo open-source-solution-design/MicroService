@@ -125,14 +125,16 @@ apisix:
       repository: artifact.onwalk.net/public/apache/apisix-dashboard
       tag: 3.0.0-alpine
   etcd:
-    enabled: false
-    global:
-      imageRegistry: ""
+    enabled: true
+    image:
+      registry: artifact.onwalk.net/public/
+      repository: bitnami/etcd
+      tag: 3.5.7-debian-11-r14
 novu:
   enabled: true
+  nameOverride: "novu"
   global:
     imageRegistry: 'artifact.onwalk.net/public'
-  nameOverride: 'novu'
 windmill:
   enabled: true
 postgresql:
