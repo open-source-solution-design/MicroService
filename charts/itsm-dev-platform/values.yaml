@@ -107,6 +107,7 @@ apisix:
     repository: artifact.onwalk.net/public/apache/apisix
     tag: 3.8.0-debian
   service:
+    type: ClusterIP
     http:
       enabled: true
       servicePort: 80
