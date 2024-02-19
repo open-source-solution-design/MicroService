@@ -126,10 +126,18 @@ apisix:
       tag: 3.0.0-alpine
   etcd:
     enabled: true
+    replicaCount: 3
+    resources:
+      requests:
+        cpu: 50m
+        memory: 50Mi
+      limits:
+        cpu: 100m
+        memory: 100Mi
     persistence:
       enabled: false
     image:
-      registry: artifact.onwalk.net/public/
+      registry: artifact.onwalk.net/public
       repository: bitnami/etcd
       tag: 3.5.7-debian-11-r14
 novu:
@@ -139,6 +147,41 @@ novu:
     imageRegistry: 'artifact.onwalk.net/public'
 windmill:
   enabled: true
+  appReplicas: 1
+  lspReplicas: 1
+  multiplayerReplicas: 1
+  postgresql:
+    enabled: true
+    fullnameOverride: windmill-postgresql
+    primary:
+      persistence:
+        enabled: false
+      resources:
+        limits:
+          cpu: "200m"
+          memory: "300Mi"
+        requests:
+          cpu: "100m"
+          memory: "100Mi"
+  workerGroups:
+    - name: "default"
+      replicas: 2
+      resources:
+        requests:
+          memory: "100Mi"
+          cpu: "100m"
+        limits:
+          memory: "300Mi"
+          cpu: "150m"
+    - name: "native"
+      replicas: 2
+      resources:
+        requests:
+          memory: "100Mi"
+          cpu: "100m"
+        limits:
+          memory: "300Mi"
+          cpu: "150m"
 postgresql:
   enabled: false
 mongodb:
