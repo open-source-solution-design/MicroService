@@ -40,12 +40,9 @@ jobs:
         helm repo add windmill https://windmill-labs.github.io/windmill-helm-charts/
         helm repo up
 
-    - name: Build and Push App chart
-      working-directory: charts/itsm-dev-platform
+    - name: Fetch Upstream charts
       shell: bash
       run: |
-        echo ${GITHUB_WORKSPACE}
-        echo `pwd`
         cd ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/       && ls -l && mkdir -pv charts/
         cd ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/charts && rm -rvf apisix     ; helm fetch apisix/apisix --version 2.6.0 --untar
         cd ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/charts && rm -rvf novu       ; helm fetch stable/novu --version 0.1.6 --untar
@@ -54,16 +51,24 @@ jobs:
         cd ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/charts && rm -rvf mongodb    ; helm fetch bitnami/mongodb --version 14.8.3 --untar
         cd ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/charts && rm -rvf postgresql ; helm fetch bitnami/postgresql --version 12.3.1 --untar
         cd ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/charts && rm -rvf minio      ; helm fetch bitnami/minio --version 12.4.2 --untar
-        cd ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/charts && rm *.tgz -f
-        cd ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/       && helm cm-push -u admin -p "${{ secrets.HELM_REPO_PASSWORD }}" --force ./ stable
+        rm -f ${GITHUB_WORKSPACE}/*.tgz -f
+        rm -f ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/charts/*.tgz
+        rm -f ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/*.tgz
 
-    - name: Auto Merge Upstream Repo
+    - name: Auto Merged
       shell: bash
       run: |
-        cd ${GITHUB_WORKSPACE}/ && rm *.tgz -f
-        cd ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/ && rm *.tgz -f
-        git checkout main
         git add -A
-        git commit -a -m "Auto Merged" || true
-        git checkout -b feature origin/backup && git checkout main && git cherry-pick feature
+        git commit -a -m "Auto Commit" || true
+        git branch -r
+        git pull
+        git branch -r
+        git switch -c feature origin/feature
+        git checkout main
+        git cherry-pick feature
         git push
+
+    - name: Build and Push Chart Package
+      working-directory: charts/itsm-dev-platform
+      shell: bash
+      run: helm cm-push -u admin -p "${{ secrets.HELM_REPO_PASSWORD }}" --force ./ stable
