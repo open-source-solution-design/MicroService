@@ -65,5 +65,5 @@ jobs:
         git checkout main
         git add -A
         git commit -a -m "Auto Merged" || true
-        git merge origin/backup || true
+        git checkout -b feature origin/backup && git checkout main && git cherry-pick feature
         git push
