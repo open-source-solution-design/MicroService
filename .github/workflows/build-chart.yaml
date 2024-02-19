@@ -6,7 +6,7 @@ on:
   pull_request:
   push:
     paths:
-      - 'charts'
+      - 'charts/*'
       - '.github/workflows/build-charts.yaml'
   workflow_dispatch:
     branches:
