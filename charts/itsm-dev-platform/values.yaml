@@ -98,8 +98,14 @@ tolerations: []
 affinity: {}
 
 apisix:
-  fullnameOverride: 'gateway'
   enabled: true
+  nameOverride: 'gateway'
+  initContainer:
+    image: artifact.onwalk.net/public/busybox
+    tag: 1.28
+  image:
+    repository: artifact.onwalk.net/public/apache/apisix
+    tag: 3.8.0-debian
   service:
     http:
       enabled: true
@@ -113,9 +119,18 @@ apisix:
       enabled: true
   dashboard:
     enabled: true
+    image:
+      repository: artifact.onwalk.net/public/apache/apisix-dashboard
+      tag: 3.0.0-alpine
+  etcd:
+    enabled: false
+    global:
+      imageRegistry: ""
 novu:
-  fullnameOverride: novu
   enabled: true
+  global:
+    imageRegistry: 'artifact.onwalk.net/public'
+  nameOverride: 'novu'
 windmill:
   enabled: true
 postgresql:
