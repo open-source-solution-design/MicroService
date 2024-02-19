@@ -30,6 +30,8 @@ jobs:
       run: |
         sudo apt update
         sudo apt install git -y
+        git config user.name shenlan
+        git config user.email manbuzhe2009@qq.com
         sudo curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
         helm plugin install https://github.com/chartmuseum/helm-push.git
         helm repo add stable https://charts.onwalk.net
@@ -37,6 +39,10 @@ jobs:
         helm repo add bitnami https://charts.bitnami.com/bitnami 
         helm repo add windmill https://windmill-labs.github.io/windmill-helm-charts/
         helm repo up
+
+    - name: Create GitRepo Backup Branch
+      shell: bash
+      run: git branch backup
 
     - name: Build and Push App chart
       working-directory: charts/itsm-dev-platform
@@ -64,4 +70,5 @@ jobs:
         cd ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/ && rm *.tgz -f
         git add -A
         git commit -a -m "Auto Merged" || true
+        git merge backup
         git push

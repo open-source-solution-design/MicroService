@@ -90,8 +90,8 @@ resources:
     cpu: 50m
     memory: 50Mi
   limits:
-    cpu: 200m
-    memory: 256Mi
+    cpu: 100m
+    memory: 200Mi
 apisix:
   enabled: true
   resources:
@@ -105,6 +105,13 @@ apisix:
   initContainer:
     image: artifact.onwalk.net/public/busybox
     tag: 1.28
+    resources:
+      requests:
+        cpu: 50m
+        memory: 50Mi
+      limits:
+        cpu: 100m
+        memory: 200Mi
   image:
     repository: artifact.onwalk.net/public/apache/apisix
     tag: 3.8.0-debian
@@ -136,15 +143,15 @@ apisix:
             - itsm-dev-platform-etcd:2379
     resources:
       requests:
-        cpu: 100m
-        memory: 128Mi
+        cpu: 50m
+        memory: 50Mi
       limits:
         cpu: 200m
-        memory: 256Mi
+        memory: 200Mi
   etcd:
     enabled: true
     fullnameOverride: itsm-dev-platform-etcd
-    replicaCount: 3
+    replicaCount: 1
     resources:
       requests:
         cpu: 50m
@@ -182,35 +189,35 @@ novu:
   api:
     resources:
       requests:
-        cpu: 100m
-        memory: 128Mi
+        cpu: 50m
+        memory: 50Mi
       limits:
         cpu: 200m
-        memory: 256Mi
+        memory: 200Mi
   web:
     resources:
       requests:
-        cpu: 100m
-        memory: 128Mi
+        cpu: 50m
+        memory: 50Mi
       limits:
         cpu: 200m
-        memory: 256Mi
+        memory: 200Mi
   ws:
     resources:
       requests:
-        cpu: 100m
-        memory: 128Mi
+        cpu: 50m
+        memory: 50Mi
       limits:
         cpu: 200m
-        memory: 256Mi
+        memory: 200Mi
   worker:
     resources:
       requests:
-        cpu: 100m
-        memory: 128Mi
+        cpu: 50m
+        memory: 50Mi
       limits:
         cpu: 200m
-        memory: 256Mi
+        memory: 200Mi
   global:
     imageRegistry: 'artifact.onwalk.net/public'
 windmill:
@@ -221,36 +228,36 @@ windmill:
     multiplayerReplicas: 1
     app:
       resources:
-        limits:
-          cpu: "200m"
-          memory: "300Mi"
         requests:
           cpu: "100m"
           memory: "100Mi"
+        limits:
+          cpu: "200m"
+          memory: "300Mi"
     lsp:
       resources:
-        limits:
-          cpu: "200m"
-          memory: "300Mi"
         requests:
           cpu: "100m"
           memory: "100Mi"
+        limits:
+          cpu: "200m"
+          memory: "300Mi"
     workerGroups:
       - name: "default"
-        replicas: 2
+        replicas: 1
         resources:
           requests:
-            memory: "100Mi"
-            cpu: "100m"
+            memory: "50Mi"
+            cpu: "50m"
           limits:
             memory: "300Mi"
             cpu: "150m"
       - name: "native"
-        replicas: 2
+        replicas: 1
         resources:
           requests:
-            memory: "100Mi"
-            cpu: "100m"
+            memory: "50Mi"
+            cpu: "50m"
           limits:
             memory: "300Mi"
             cpu: "150m"
@@ -261,12 +268,12 @@ windmill:
       persistence:
         enabled: false
       resources:
+        requests:
+          cpu: "50m"
+          memory: "50Mi"
         limits:
           cpu: "200m"
           memory: "300Mi"
-        requests:
-          cpu: "100m"
-          memory: "100Mi"
 postgresql:
   enabled: false
 mongodb:
