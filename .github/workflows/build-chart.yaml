@@ -60,9 +60,7 @@ jobs:
       run: |
         git add -A
         git commit -a -m "Auto Commit" || true
-        git branch -r
         git pull
-        git branch -r
         git switch -c feature origin/feature
         git checkout main
         git cherry-pick feature
