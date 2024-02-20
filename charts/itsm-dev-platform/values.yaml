@@ -88,7 +88,7 @@ replicaCount: 0
 resources:
   requests:
     cpu: 50m
-    memory: 50Mi
+    memory: 100Mi
   limits:
     cpu: 100m
     memory: 200Mi
@@ -97,7 +97,7 @@ apisix:
   resources:
     requests:
       cpu: 50m
-      memory: 50Mi
+      memory: 100Mi
     limits:
       cpu: 100m
       memory: 200Mi
@@ -107,8 +107,8 @@ apisix:
     tag: 1.28
     resources:
       requests:
-        cpu: 50m
-        memory: 50Mi
+        cpu: 100m
+        memory: 100Mi
       limits:
         cpu: 100m
         memory: 200Mi
@@ -144,7 +144,7 @@ apisix:
     resources:
       requests:
         cpu: 50m
-        memory: 50Mi
+        memory: 100Mi
       limits:
         cpu: 200m
         memory: 200Mi
@@ -155,7 +155,7 @@ apisix:
     resources:
       requests:
         cpu: 50m
-        memory: 50Mi
+        memory: 100Mi
       limits:
         cpu: 100m
         memory: 100Mi
@@ -169,28 +169,13 @@ novu:
   enabled: true
   nameOverride: "novu"
   fullnameOverride: "novu"
-  redis:
-    enabled: true
-    master:
-      service:
-        ports:
-          redis: "6379"
-    architecture: standalone
-    auth:
-      enabled: false
-  mongodb:
-    enabled: true
-    architecture: standalone
-    auth:
-      enabled: false
-    service:
-      ports:
-        mongodb: "27017"
+  global:
+    imageRegistry: 'artifact.onwalk.net/public'
   api:
     resources:
       requests:
         cpu: 50m
-        memory: 50Mi
+        memory: 100Mi
       limits:
         cpu: 200m
         memory: 200Mi
@@ -198,7 +183,7 @@ novu:
     resources:
       requests:
         cpu: 50m
-        memory: 50Mi
+        memory: 100Mi
       limits:
         cpu: 200m
         memory: 200Mi
@@ -206,7 +191,7 @@ novu:
     resources:
       requests:
         cpu: 50m
-        memory: 50Mi
+        memory: 100Mi
       limits:
         cpu: 200m
         memory: 200Mi
@@ -214,40 +199,55 @@ novu:
     resources:
       requests:
         cpu: 50m
-        memory: 50Mi
+        memory: 100Mi
       limits:
         cpu: 200m
         memory: 200Mi
-  global:
-    imageRegistry: 'artifact.onwalk.net/public'
+  externalDatabase:
+    host: mongodb
+    port: 27017
+    username: 'novu'
+    password: 'novu'
+    database: novu-db
+  externalRedis:
+    host: redis
+    port: 6379
+    password: ''
+  externalS3:
+    endpoint: http://localstack:4566
+    bucketName: novu-local
+    region: us-east-1
+    accessKey: test
+    secretKey: test
 windmill:
   enabled: true
   windmill:
     appReplicas: 1
     lspReplicas: 1
     multiplayerReplicas: 1
+    databaseUrl: postgres://postgres:windmill@windmill-postgresql/windmill?sslmode=disable
     app:
       resources:
-        requests:
-          cpu: "100m"
-          memory: "100Mi"
         limits:
           cpu: "200m"
           memory: "300Mi"
+        requests:
+          cpu: "100m"
+          memory: "100Mi"
     lsp:
       resources:
-        requests:
-          cpu: "100m"
-          memory: "100Mi"
         limits:
           cpu: "200m"
           memory: "300Mi"
+        requests:
+          cpu: "100m"
+          memory: "100Mi"
     workerGroups:
       - name: "default"
         replicas: 1
         resources:
           requests:
-            memory: "50Mi"
+            memory: "100Mi"
             cpu: "50m"
           limits:
             memory: "300Mi"
@@ -256,29 +256,92 @@ windmill:
         replicas: 1
         resources:
           requests:
-            memory: "50Mi"
+            memory: "100Mi"
             cpu: "50m"
           limits:
             memory: "300Mi"
             cpu: "150m"
-  postgresql:
-    enabled: true
-    fullnameOverride: windmill-postgresql
-    primary:
-      persistence:
-        enabled: false
-      resources:
-        requests:
-          cpu: "50m"
-          memory: "50Mi"
-        limits:
-          cpu: "200m"
-          memory: "300Mi"
 postgresql:
-  enabled: false
-mongodb:
-  enabled: false
+  enabled: true
+  fullnameOverride: windmill-postgresql
+  global:
+    imageRegistry: ""
+    postgresql:
+      auth:
+        postgresPassword: "windmill"
+        username: "postgres"
+        password: "windmill"
+        database: "windmill"
+  primary:
+    persistence:
+      enabled: false
+    resources:
+      requests:
+        memory: 100Mi
+        cpu: 100m
+      limits:
+        cpu: "200m"
+        memory: "300Mi"
 redis:
-  enabled: false
+  enabled: true
+  nameOverride: "redis"
+  architecture: standalone
+  global:
+    imageRegistry: ""
+    redis:
+      password: ""
+  auth:
+    enabled: true
+    sentinel: false
+    password: ""
+  persistence:
+    enabled: false
+  master:
+    serviceAccount:
+      create: false
+    resources:
+      requests:
+        memory: 100Mi
+        cpu: 100m
+      limits:
+        cpu: "200m"
+        memory: "300Mi"
+mongodb:
+  enabled: true
+  global:
+    imageRegistry: ""
+  nameOverride: "mongodb"
+  auth:
+    enabled: true
+    rootUser: root
+    rootPassword: ""
+    usernames:
+    - novu
+    passwords:
+    - novu
+    databases:
+    - novu-db
+  persistence:
+    enabled: false
+  resources:
+    requests:
+      memory: 100Mi
+      cpu: 100m
+    limits:
+      cpu: "200m"
+      memory: "300Mi"
 minio:
-  enabled: false
+  enabled: true
+  nameOverride: minio
+  mode: standalone
+  defaultBuckets: "my-bucket, novu-local"
+  auth:
+    rootUser: test
+    rootPassword: test
+  resources:
+    requests:
+      memory: 100Mi
+      cpu: 100m
+    limits:
+      cpu: "200m"
+      memory: "300Mi"
