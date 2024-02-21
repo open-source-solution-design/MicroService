@@ -135,6 +135,8 @@ windmill:
     multiplayerReplicas: 1
     databaseUrl: postgres://postgres:windmill@windmill-postgresql/windmill?sslmode=disable
     app:
+      image: artifact.onwalk.net/public/windmill-labs/windmill
+      tag: 1.258.4
       resources:
         limits:
           cpu: "200m"
@@ -143,6 +145,8 @@ windmill:
           cpu: "100m"
           memory: "100Mi"
     lsp:
+      image: artifact.onwalk.net/public/windmill-labs/windmill-lsp
+      tag: latest
       resources:
         limits:
           cpu: "200m"
