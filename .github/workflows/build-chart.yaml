@@ -34,6 +34,7 @@ jobs:
         git config user.email manbuzhe2009@qq.com
         sudo curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
         helm plugin install https://github.com/chartmuseum/helm-push.git
+        helm repo add minio https://charts.min.io
         helm repo add stable https://charts.onwalk.net
         helm repo add apisix https://charts.apiseven.com
         helm repo add bitnami https://charts.bitnami.com/bitnami 
@@ -50,7 +51,7 @@ jobs:
         cd ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/charts && rm -rvf redis      ; helm fetch bitnami/redis --version 18.12.1 --untar
         cd ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/charts && rm -rvf mongodb    ; helm fetch bitnami/mongodb --version 14.8.3 --untar
         cd ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/charts && rm -rvf postgresql ; helm fetch bitnami/postgresql --version 12.3.1 --untar
-        cd ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/charts && rm -rvf minio      ; helm fetch bitnami/minio --version 12.4.2 --untar
+        cd ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/charts && rm -rvf minio      ; helm fetch minio/minio --version 5.0.15 --untar
         rm -f ${GITHUB_WORKSPACE}/*.tgz -f
         rm -f ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/charts/*.tgz
         rm -f ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/*.tgz

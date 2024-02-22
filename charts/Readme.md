@@ -7,6 +7,47 @@ helm upgrade --install itsm-dev stable/itsm -n itsm-dev
 ```
 
 ```
+export namespace=itsm-dev
+
+echo "Create redis-password secret"
+kubectl delete secret generic redis-secret -n  $namespace || true
+kubectl create secret generic redis-secret                                     \
+          --from-literal=redis-password="redis"                                \
+          -n  $namespace
+
+echo "Create mongodb-password secret"
+kubectl delete secret generic mongodb-secret -n  $namespace || true
+kubectl create secret generic mongodb-secret                                   \
+          --from-literal=mongoUrl="mongodb://novu:novu@mongodb:27017/"         \
+          -n  $namespace
+
+echo "Create novu secret"
+kubectl delete secret generic novu-secret -n  $namespace || true
+kubectl create secret generic novu-secret                                       \
+          --from-literal=jwt-secret="xxxxxxx"                                   \
+          --from-literal=store-encryption-key="xxxx"                            \
+          -n  $namespace
+
+echo "Create s3 secret"
+kubectl delete secret generic s3-secret -n  $namespace || true
+kubectl create secret generic s3-secret                                         \
+          --from-literal=endpoint="http://localstack:4566"                      \
+          --from-literal=bucketName="novu-local"                                \
+          --from-literal=region="xx"                                            \
+          --from-literal=accessKey="test"                                       \
+          --from-literal=secretKey="test"                                       \
+          -n  $namespace
+
+echo "Create minio secret"
+kubectl delete secret generic minio-secret -n  $namespace || true
+kubectl create secret generic minio-secret                                      \
+          --from-literal=root-user="test"                                       \
+          --from-literal=root-password="test"                                   \
+          -n  $namespace
+```
+
+
+```
 cat > redis-values.yaml << EOF
 apisix:
   enabled: false

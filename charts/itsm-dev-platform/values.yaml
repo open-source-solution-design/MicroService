@@ -46,7 +46,7 @@ apisix:
           port: 9000
         etcd:
           endpoints:
-            - itsm-dev-platform-etcd:2379
+            - apisix-etcd:2379
     resources:
       requests:
         cpu: 50m
@@ -56,7 +56,7 @@ apisix:
         memory: 200Mi
   etcd:
     enabled: true
-    fullnameOverride: itsm-dev-platform-etcd
+    fullnameOverride: apisix-etcd
     replicaCount: 1
     resources:
       requests:
@@ -109,22 +109,20 @@ novu:
       limits:
         cpu: 200m
         memory: 200Mi
+  mongodb:
+    enabled: false
   externalDatabase:
-    host: mongodb
-    port: 27017
-    username: 'novu'
-    password: 'novu'
-    database: novu-db
+    existingSecret: mongodb-secret
+  redis:
+    enabled: false
   externalRedis:
+    existingSecret: redis-secret
     host: redis
     port: 6379
-    password: ''
+  localstack:
+    enabled: false
   externalS3:
-    endpoint: http://localstack:4566
-    bucketName: novu-local
-    region: us-east-1
-    accessKey: test
-    secretKey: test
+    existingSecret: s3-secret
 windmill:
   enabled: true
   postgresql:
