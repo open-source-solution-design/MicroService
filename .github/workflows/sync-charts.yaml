@@ -18,7 +18,7 @@ env:
   TAG: 0.1.4 
 
 jobs:
-  build-push-charts:
+  build-push-charts-fluxcd:
     runs-on: ubuntu-latest
 
     steps:
@@ -44,3 +44,55 @@ jobs:
         rm -rvf flux2
         helm fetch fluxcd/flux2 --version 2.12.1 --untar
         cd flux2 && helm cm-push -u admin -p "${{ secrets.HELM_REPO_PASSWORD }}" --force ./ sync
+  build-push-charts-fluxcd:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Initialization environment
+      shell: bash
+      run: |
+        sudo apt update
+        sudo apt install git -y
+        git config user.name shenlan
+        git config user.email manbuzhe2009@qq.com
+        sudo curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+        helm plugin install https://github.com/chartmuseum/helm-push.git
+        helm repo add sync https://charts.onwalk.net
+        helm repo add bitnami https://charts.bitnami.com/bitnami 
+        helm repo up
+
+    - name: Fetch & push redis charts
+      shell: bash
+      run: |
+        cd ${GITHUB_WORKSPACE}/
+        rm -rvf redis
+        helm fetch bitnami/redis --version 18.12.1 --untar
+        cd redis && helm cm-push -u admin -p "${{ secrets.HELM_REPO_PASSWORD }}" --force ./ sync
+
+    - name: Fetch & push mongodb charts
+      shell: bash
+      run: |
+        cd ${GITHUB_WORKSPACE}/
+        rm -rvf mongodb
+        helm fetch bitnami/mongodb --version 14.8.3 --untar
+        cd mongodb && helm cm-push -u admin -p "${{ secrets.HELM_REPO_PASSWORD }}" --force ./ sync
+
+    - name: Fetch & push postgresql charts
+      shell: bash
+      run: |
+        cd ${GITHUB_WORKSPACE}/
+        rm -rvf postgresql
+        helm fetch bitnami/postgresql --version 12.3.1 --untar
+        cd postgresql && helm cm-push -u admin -p "${{ secrets.HELM_REPO_PASSWORD }}" --force ./ sync
+
+    - name: Fetch & push postgresql charts
+      shell: bash
+      run: |
+        cd ${GITHUB_WORKSPACE}/
+        helm repo add minio https://charts.min.io
+        helm repo update
+        rm -rvf minio
+        helm fetch minio/minio --version 5.0.15 --untar
+        cd minio && helm cm-push -u admin -p "${{ secrets.HELM_REPO_PASSWORD }}" --force ./ sync
