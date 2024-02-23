@@ -171,11 +171,3 @@ windmill:
           limits:
             memory: "300Mi"
             cpu: "150m"
-redis:
-  enabled: false
-postgresql:
-  enabled: false
-mongodb:
-  enabled: false
-minio:
-  enabled: false
