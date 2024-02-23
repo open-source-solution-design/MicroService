@@ -44,7 +44,7 @@ jobs:
         rm -rvf flux2
         helm fetch fluxcd/flux2 --version 2.12.1 --untar
         cd flux2 && helm cm-push -u admin -p "${{ secrets.HELM_REPO_PASSWORD }}" --force ./ sync
-  build-push-charts-fluxcd:
+  build-push-charts-databases:
     runs-on: ubuntu-latest
 
     steps:
@@ -87,7 +87,7 @@ jobs:
         helm fetch bitnami/postgresql --version 12.3.1 --untar
         cd postgresql && helm cm-push -u admin -p "${{ secrets.HELM_REPO_PASSWORD }}" --force ./ sync
 
-    - name: Fetch & push postgresql charts
+    - name: Fetch & push minio charts
       shell: bash
       run: |
         cd ${GITHUB_WORKSPACE}/
