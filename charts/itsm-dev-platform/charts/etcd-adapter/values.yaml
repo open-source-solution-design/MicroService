@@ -1,8 +1,9 @@
 enabled: true
+fullnameOverride: apisix-etcd
 image:
   registry: artifact.onwalk.net/public
   repository: apisix/etcd-adapter
-fullnameOverride: apisix-etcd
+  tag: latest
 service:
   name: ""  # 如果为空，将使用fullnameOverride的值作为服务名称
   port: 2379
