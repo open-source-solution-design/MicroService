@@ -57,6 +57,7 @@ apisix:
   etcd:
     enabled: false
   externalEtcd:
+    user: ""
     host:
       - http://apisix-etcd-adapter:2379
 novu:
