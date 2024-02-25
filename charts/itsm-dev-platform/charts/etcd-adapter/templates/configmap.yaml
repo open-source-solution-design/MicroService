@@ -6,4 +6,18 @@ metadata:
 data:
   config.yaml: |
     {{ .Values.config | nindent 4 }}
+    server:
+      host: 0.0.0.0
+      port: 2379
+    log:
+      level: info
+
+    datasource:
+      type: btree # btree of mysql
+      mysql:
+        host: {{ .Values.mysql.host }}
+        port: {{ .Values.mysql.port }}
+        username: {{ .Values.mysql.user }}
+        password: {{ .Values.mysql.password }}
+        database: {{ .Values.mysql.database }}
 {{- end }}
