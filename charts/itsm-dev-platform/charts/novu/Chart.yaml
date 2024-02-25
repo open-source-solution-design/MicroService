@@ -26,4 +26,4 @@ keywords:
 name: novu
 sources:
 - https://github.com/novuhq/novu/tree/next/docker/kubernetes/helm
-version: 0.1.6
+version: 0.1.7

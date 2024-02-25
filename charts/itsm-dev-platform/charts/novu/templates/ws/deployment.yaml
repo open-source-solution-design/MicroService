@@ -2,6 +2,7 @@ apiVersion: {{ include "common.capabilities.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ printf "%s-%s" .Release.Name "ws"  }}
+  namespace: {{ include "common.names.namespace" . | quote }}
   labels: {{- include "common.labels.standard" . | nindent 4 }}
     app.kubernetes.io/component: {{ printf "%s-%s" .Release.Name "ws"  }}
     {{- if .Values.commonLabels }}
