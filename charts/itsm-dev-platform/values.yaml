@@ -56,21 +56,9 @@ apisix:
         memory: 200Mi
   etcd:
     enabled: false
-    fullnameOverride: apisix-etcd
-    replicaCount: 1
-    resources:
-      requests:
-        cpu: 50m
-        memory: 100Mi
-      limits:
-        cpu: 100m
-        memory: 100Mi
-    persistence:
-      enabled: false
-    image:
-      registry: artifact.onwalk.net/public
-      repository: bitnami/etcd
-      tag: 3.5.7-debian-11-r14
+  externalEtcd:
+    host:
+      - http://apisix-etcd:2379
 novu:
   enabled: true
   nameOverride: "novu"
