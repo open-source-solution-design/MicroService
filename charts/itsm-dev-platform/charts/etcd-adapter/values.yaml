@@ -1,0 +1,36 @@
+enabled: true
+image:
+  registry: artifact.onwalk.net/public
+  repository: apisix/etcd-adapter
+fullnameOverride: apisix-etcd
+service:
+  name: ""  # 如果为空，将使用fullnameOverride的值作为服务名称
+  port: 2379
+  tag: latest
+replicaCount: 1
+resources:
+  requests:
+    cpu: 50m
+    memory: 100Mi
+  limits:
+    cpu: 200m
+    memory: 200Mi
+config: |
+  server:
+    host: 0.0.0.0
+    port: 12379
+  # tls:
+  #   cert: /path/to/file.pem
+  #   key: /path/to/file.pem
+  
+  log:
+    level: info
+  
+  datasource:
+    type: btree # btree of mysql
+    # mysql:
+    #   host: 127.0.0.1
+    #   port: 3306
+    #   username: root
+    #   password:
+    #   database: apisix

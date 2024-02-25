@@ -1,0 +1,36 @@
+{{- if .Values.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ if .Values.service.name }}{{ .Values.service.name }}{{ else }}{{ .Values.fullnameOverride }}{{ end }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ if .Values.service.name }}{{ .Values.service.name }}{{ else }}{{ .Values.fullnameOverride }}{{ end }}
+  template:
+    metadata:
+      labels:
+        app: {{ if .Values.service.name }}{{ .Values.service.name }}{{ else }}{{ .Values.fullnameOverride }}{{ end }}
+    spec:
+      containers:
+      - name: etcd-adapter
+        image: {{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}
+        ports:
+        - containerPort: {{ .Values.service.port }}
+        resources:
+          requests:
+            cpu: {{ .Values.resources.requests.cpu }}
+            memory: {{ .Values.resources.requests.memory }}
+          limits:
+            cpu: {{ .Values.resources.limits.cpu }}
+            memory: {{ .Values.resources.limits.memory }}
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etcd-adapter/conf/config.yaml
+          subPath: config.yaml
+      volumes:
+      - name: config-volume
+        configMap:
+          name: etcd-adapter-config
+{{- end }}

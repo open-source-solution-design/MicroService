@@ -55,7 +55,7 @@ apisix:
         cpu: 200m
         memory: 200Mi
   etcd:
-    enabled: true
+    enabled: false
     fullnameOverride: apisix-etcd
     replicaCount: 1
     resources:
@@ -71,6 +71,25 @@ apisix:
       registry: artifact.onwalk.net/public
       repository: bitnami/etcd
       tag: 3.5.7-debian-11-r14
+etcd-adapter:
+  enabled: true
+  fullnameOverride: apisix-etcd
+  service:
+    port: 2379
+  config: |
+    server:
+      host: 0.0.0.0
+      port: 2379
+    log:
+      level: info
+    datasource:
+      type: btree # btree of mysql
+      mysql:
+        host: mysql
+        port: 3306
+        username: apisix
+        password: apisix
+        database: apisix
 novu:
   enabled: true
   nameOverride: "novu"
