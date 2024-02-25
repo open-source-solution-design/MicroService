@@ -75,6 +75,7 @@ novu:
   enabled: true
   nameOverride: "novu"
   fullnameOverride: "novu"
+  namespaceOverride: "itsm-dev"
   global:
     imageRegistry: 'artifact.onwalk.net/public'
   api:
