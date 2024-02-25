@@ -46,7 +46,7 @@ apisix:
           port: 9000
         etcd:
           endpoints:
-            - apisix-etcd:2379
+            - apisix-etcd-adapter:2379
     resources:
       requests:
         cpu: 50m
@@ -58,7 +58,7 @@ apisix:
     enabled: false
   externalEtcd:
     host:
-      - http://apisix-etcd:2379
+      - http://apisix-etcd-adapter:2379
 novu:
   enabled: true
   nameOverride: "novu"
@@ -161,7 +161,7 @@ windmill:
             cpu: "150m"
 etcd-adapter:
   enabled: true
-  fullnameOverride: apisix-etcd
+  fullnameOverride: apisix-etcd-adapter
   service:
     port: 2379
 mysql:
