@@ -4,13 +4,12 @@ kind: ConfigMap
 metadata:
   name: etcd-adapter-config
 data:
-  config.yaml: |
+  config.yaml: |-
     server:
       host: 0.0.0.0
       port: 2379
     log:
       level: info
-
     datasource:
       type: btree # btree of mysql
       mysql:
