@@ -44,7 +44,7 @@ jobs:
       run: |
         cd ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/       && ls -l && mkdir -pv charts/
         cd ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/charts && rm -rvf apisix     ; helm fetch apisix/apisix --version 2.6.0 --untar
-        cd ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/charts && rm -rvf novu       ; helm fetch stable/novu --version 0.1.6 --untar
+        cd ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/charts && rm -rvf novu       ; helm fetch stable/novu --version 0.1.7 --untar
         cd ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/charts && rm -rvf windmill   ; helm fetch windmill/windmill --version 2.0.88 --untar
         rm -f ${GITHUB_WORKSPACE}/*.tgz -f
         rm -f ${GITHUB_WORKSPACE}/charts/itsm-dev-platform/charts/*.tgz
