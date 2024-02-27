@@ -62,6 +62,6 @@ jobs:
         git push
 
     - name: Build and Push Chart Package
-      working-directory: charts/itsm-dev-platform
+      working-directory: charts/itsm-tools
       shell: bash
       run: helm cm-push -u admin -p "${{ secrets.HELM_REPO_PASSWORD }}" --force ./ stable
